@@ -22,6 +22,14 @@
                 <p>{{ post.content }}</p>
                 <small class="text-muted">{{ post.timestamp }}</small>
             </div>
+            <form action="{% url 'like_post' post.id %}" method="post">
+                {% csrf_token %}
+                {% if user in post.likes.all %}
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">💔 Unlike</button>
+                {% else %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">❤️ Like</button>
+                {% endif %}
+            </form>
         </div>
     {% endfor %}
 </div>
