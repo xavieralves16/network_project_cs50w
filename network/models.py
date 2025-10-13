@@ -14,6 +14,13 @@ class Post(models.Model):
     )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="liked_posts", blank=True
+    )
 
     def __str__(self):
         return f"{self.user.username}: {self.content[:30]}"
+    
+    @property
+    def like_count(self):
+        return self.likes.count()
