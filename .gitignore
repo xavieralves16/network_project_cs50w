@@ -1,0 +1,7 @@
+network_project_cs50w/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+.vscode/
