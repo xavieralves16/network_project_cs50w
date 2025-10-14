@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -133,3 +133,17 @@ def following(request):
     return render(request, "network/following.html", {
         "posts": posts
     })
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, user=request.user)  
+
+    if request.method == "POST":
+        new_content = request.POST.get("content", "").strip()
+        if new_content:
+            post.content = new_content
+            post.save()
+            return JsonResponse({"success": True, "new_content": post.content})
+        return JsonResponse({"success": False, "error": "Content cannot be empty."})
+
+    return JsonResponse({"success": False, "error": "Invalid request."})
