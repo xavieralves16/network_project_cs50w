@@ -42,7 +42,7 @@
                         {% csrf_token %}
                         <button type="submit" style="border: none; background: none; cursor: pointer; padding: 0;">
                             {% if user in post.likes.all %}
-                                <span style="font-size: 1.4rem; color: red;">❤️</span>
+                                <span style="font-size: 1.4rem; color: red;">♡</span>
                             {% else %}
                                 <span style="font-size: 1.4rem; color: grey;">♡</span>
                             {% endif %}

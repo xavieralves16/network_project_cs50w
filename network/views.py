@@ -116,3 +116,14 @@ def profile(request, username):
         "following_count": following_count,
         "is_following": is_following,
     })
+
+@login_required
+def following(request):
+
+    following_users = Follow.objects.filter(follower=request.user).values_list("following", flat=True)
+
+    posts = Post.objects.filter(user__in=following_users).order_by("-timestamp")
+
+    return render(request, "network/following.html", {
+        "posts": posts
+    })
