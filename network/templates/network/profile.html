@@ -1,0 +1,60 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<div class="container mt-4">
+
+    <h2>{{ profile_user.username }}</h2>
+
+
+    <p>
+        <strong>{{ followers_count }}</strong> Followers |
+        <strong>{{ following_count }}</strong> Following
+    </p>
+
+
+    {% if user.is_authenticated and user != profile_user %}
+        <form action="{% url 'toggle_follow' profile_user.username %}" method="post">
+            {% csrf_token %}
+            {% if is_following %}
+                <button type="submit" class="btn btn-secondary btn-sm">Unfollow</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+            {% endif %}
+        </form>
+    {% endif %}
+
+    <hr>
+
+  
+    <h4>Posts</h4>
+
+    {% for post in posts %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h6><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></h6>
+                <p>{{ post.content }}</p>
+                <small class="text-muted">{{ post.timestamp }}</small>
+
+
+                <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+                    <form action="{% url 'like_post' post.id %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" style="border: none; background: none; cursor: pointer; padding: 0;">
+                            {% if user in post.likes.all %}
+                                <span style="font-size: 1.4rem; color: red;">❤️</span>
+                            {% else %}
+                                <span style="font-size: 1.4rem; color: grey;">♡</span>
+                            {% endif %}
+                        </button>
+                    </form>
+                    <span>{{ post.like_count }}</span>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}
