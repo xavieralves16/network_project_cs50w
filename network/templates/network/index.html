@@ -17,38 +17,38 @@
 
 <div>
     {% for post in posts %}
-
+        <!-- Each post card -->
         <div class="card mb-2" data-post-id="{{ post.id }}">
             <div class="card-body">
                 <h5>
                     <a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a>
                 </h5>
 
-
+                <!-- post content -->
                 <p class="post-content">{{ post.content }}</p>
                 <small class="text-muted">{{ post.timestamp }}</small>
 
+                <!-- Edit button (only for owner) -->
                 {% if user == post.user %}
                     <button class="btn btn-sm btn-link edit-btn">Edit</button>
                 {% endif %}
             </div>
 
-            <div style="display: flex; align-items: center; gap: 6px;">
-                <form action="{% url 'like_post' post.id %}" method="post" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" style="border: none; background: none; cursor: pointer; padding: 0;">
-                        {% if user in post.likes.all %}
-                            <span style="font-size: 1.5rem; color: red;">♡</span>
-                        {% else %}
-                            <span style="font-size: 1.5rem; color: grey;">♡</span>
-                        {% endif %}
-                    </button>
-                </form>
-                <span>{{ post.like_count }}</span>
+            <!-- Like/Unlike section -->
+            <div class="like-section" data-post-id="{{ post.id }}" style="display: flex; align-items: center; gap: 6px; margin: 0 0 10px 15px;">
+                <button class="like-btn" style="border: none; background: none; cursor: pointer; padding: 0;">
+                    {% if user in post.likes.all %}
+                        <span class="heart" style="font-size: 1.5rem; color: red;">♡</span>
+                    {% else %}
+                        <span class="heart" style="font-size: 1.5rem; color: grey;">♡</span>
+                    {% endif %}
+                </button>
+                <span class="like-count">{{ post.like_count }}</span>
             </div>
         </div>
     {% endfor %}
 
+    <!-- Pagination -->
     <div class="pagination mt-3">
         {% if posts.has_previous %}
             <a href="?page={{ posts.previous_page_number }}" class="btn btn-outline-primary btn-sm">Previous</a>
@@ -62,6 +62,7 @@
     </div>
 </div>
 
-
+<!-- External JS -->
 <script src="{% static 'network/edit.js' %}"></script>
+<script src="{% static 'network/likes.js' %}"></script>
 {% endblock %}
