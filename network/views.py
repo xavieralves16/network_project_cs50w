@@ -31,6 +31,22 @@ def like_post(request, post_id):
             post.likes.add(request.user) 
     return redirect("index")
 
+@login_required
+def toggle_follow(request, username):
+    profile_user = get_object_or_404(User, username=username)
+
+    if profile_user == request.user:
+        return redirect("profile", username=username)
+
+    follow = Follow.objects.filter(follower=request.user, following=profile_user).first()
+
+    if follow:
+        follow.delete()
+    else:
+        Follow.objects.create(follower=request.user, following=profile_user)
+
+    return redirect("profile", username=username)
+
 def login_view(request):
     if request.method == "POST":
 
