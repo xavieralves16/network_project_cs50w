@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
 <div class="container mt-4">
@@ -6,27 +7,26 @@
     <hr>
 
     {% for post in posts %}
-        <div class="card mb-3">
+        <!-- Each post card -->
+        <div class="card mb-3" data-post-id="{{ post.id }}">
             <div class="card-body">
                 <h5>
                     <a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a>
                 </h5>
-                <p>{{ post.content }}</p>
+                <!-- Add post-content class so edit.js could also work if you want -->
+                <p class="post-content">{{ post.content }}</p>
                 <small class="text-muted">{{ post.timestamp }}</small>
 
-
-                <div style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
-                    <form action="{% url 'like_post' post.id %}" method="post" style="margin: 0;">
-                        {% csrf_token %}
-                        <button type="submit" style="border: none; background: none; cursor: pointer; padding: 0;">
-                            {% if user in post.likes.all %}
-                                <span style="font-size: 1.4rem; color: red;">♡</span>
-                            {% else %}
-                                <span style="font-size: 1.4rem; color: grey;">♡</span>
-                            {% endif %}
-                        </button>
-                    </form>
-                    <span>{{ post.like_count }}</span>
+                <!-- Like/Unlike section -->
+                <div class="like-section" data-post-id="{{ post.id }}" style="display: flex; align-items: center; gap: 6px; margin-top: 8px;">
+                    <button class="like-btn" style="border: none; background: none; cursor: pointer; padding: 0;">
+                        {% if user in post.likes.all %}
+                            <span class="heart" style="font-size: 1.4rem; color: red;">♡</span>
+                        {% else %}
+                            <span class="heart" style="font-size: 1.4rem; color: grey;">♡</span>
+                        {% endif %}
+                    </button>
+                    <span class="like-count">{{ post.like_count }}</span>
                 </div>
             </div>
         </div>
@@ -34,4 +34,8 @@
         <p>You are not following anyone, or they haven't posted yet.</p>
     {% endfor %}
 </div>
+
+<!-- JS files -->
+<script src="{% static 'network/edit.js' %}"></script>
+<script src="{% static 'network/likes.js' %}"></script>
 {% endblock %}
