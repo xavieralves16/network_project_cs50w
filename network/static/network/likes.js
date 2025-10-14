@@ -1,3 +1,20 @@
+// Helper to get CSRF token from Django cookie
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie("csrftoken");
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".like-btn").forEach(button => {
         button.onclick = () => {
@@ -9,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fetch(`/like/${postId}`, {
                 method: "POST",
                 headers: {
-                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+                    "X-CSRFToken": csrftoken
                 }
             })
             .then(response => response.json())
