@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 from .models import User, Post, Follow
 
@@ -15,7 +16,12 @@ def index(request):
             Post.objects.create(user=request.user, content=content)
         return redirect("index")
 
-    posts = Post.objects.all().order_by("-timestamp")
+    posts_list = Post.objects.all().order_by("-timestamp")
+    paginator = Paginator(posts_list, 10)  # 10 posts por página
+
+    page_number = request.GET.get("page")  # ex: ?page=2
+    posts = paginator.get_page(page_number)
+
     return render(request, "network/index.html", {"posts": posts})
 
 
