@@ -32,10 +32,19 @@ def like_post(request, post_id):
 
     if request.method == "POST":
         if request.user in post.likes.all():
-            post.likes.remove(request.user)  
+            post.likes.remove(request.user)
+            liked = False
         else:
-            post.likes.add(request.user) 
-    return redirect(request.META.get("HTTP_REFERER", "index"))
+            post.likes.add(request.user)
+            liked = True
+
+        return JsonResponse({
+            "success": True,
+            "liked": liked,
+            "like_count": post.likes.count()
+        })
+
+    return JsonResponse({"success": False, "error": "Invalid request"})
 
 @login_required
 def toggle_follow(request, username):
