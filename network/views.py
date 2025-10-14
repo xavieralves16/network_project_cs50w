@@ -29,7 +29,7 @@ def like_post(request, post_id):
             post.likes.remove(request.user)  
         else:
             post.likes.add(request.user) 
-    return redirect("index")
+    return redirect(request.META.get("HTTP_REFERER", "index"))
 
 @login_required
 def toggle_follow(request, username):
