@@ -21,6 +21,9 @@
                 <h5><a href="{% url 'profile' post.user.username %}">{{ post.user.username }}</a></h5>
                 <p>{{ post.content }}</p>
                 <small class="text-muted">{{ post.timestamp }}</small>
+                {% if user == post.user %}
+                    <button class="btn btn-sm btn-link edit-btn">Edit</button>
+                {% endif %}
             </div>
             <div style="display: flex; align-items: center; gap: 6px;">
                 <form action="{% url 'like_post' post.id %}" method="post" style="margin: 0;">
