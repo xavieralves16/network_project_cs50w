@@ -3,11 +3,19 @@ document.addEventListener("DOMContentLoaded", () => {
         button.onclick = () => {
             const card = button.closest(".card");
             const contentEl = card.querySelector(".post-content");
+            const postId = card.getAttribute("data-post-id");  
+
+            if (!contentEl) {
+                console.error("No .post-content found in this card", card);
+                return;
+            }
+
             const oldContent = contentEl.innerText;
 
-            // Replace text with textarea
+            // Replace content with textarea + buttons
             contentEl.innerHTML = `
-                <textarea class="form-control edit-textarea">${oldContent}</textarea>
+                <label class="visually-hidden" for="edit-${postId}">Edit Post</label>
+                <textarea id="edit-${postId}" class="form-control edit-textarea" placeholder="Edit your post...">${oldContent}</textarea>
                 <button class="btn btn-primary btn-sm save-btn mt-1">Save</button>
                 <button class="btn btn-secondary btn-sm cancel-btn mt-1">Cancel</button>
             `;
@@ -21,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.querySelector(".save-btn").onclick = () => {
                 const newContent = card.querySelector(".edit-textarea").value;
 
-                fetch(`/edit/${card.dataset.postId}`, {
+                fetch(`/edit/${postId}`, {
                     method: "POST",
                     headers: {
                         "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
@@ -35,7 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {
                         alert(data.error);
                     }
-                });
+                })
+                .catch(err => console.error("Error saving post:", err));
             };
         };
     });
